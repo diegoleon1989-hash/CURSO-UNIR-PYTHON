@@ -50,14 +50,26 @@ axes[0, 1].set_xlabel('Categoría')
 axes[0, 1].set_ylabel('Beneficio ($)')
 # Conclusión: La categoría "Technology" tiene una mediana de beneficios más alta, pero también una dispersión considerable. "Furniture" tiene muchos valores atípicos negativos (pérdidas).
 
-# --- Gráfico 3: Bivariante con Matplotlib (Gráfico de Dispersión) ---
-# Relación entre Ventas y Beneficios
-axes[1, 0].scatter(df['Sales'], df['Profit'], alpha=0.5, color='coral', edgecolor='white')
-axes[1, 0].set_title('Relación: Ventas vs Beneficios (Matplotlib)')
+# --- Gráfico 3: Multivariante con Matplotlib (Gráfico de Dispersión Modificado) ---
+# Relación entre Ventas (X), Beneficios (Y), Descuento (Color) y Cantidad (Tamaño)
+scatter_multi = axes[1, 0].scatter(
+    df['Sales'], 
+    df['Profit'], 
+    c=df['Discount'],        # Tercera variable: El color representa el nivel de descuento
+    cmap='coolwarm',         # Paleta de colores (azul = bajo descuento, rojo = alto descuento)
+    s=df['Quantity'] * 15,   # Cuarta variable: El tamaño representa la cantidad (multiplicado para visibilidad)
+    alpha=0.7, 
+    edgecolor='white'
+)
+axes[1, 0].set_title('Ventas vs Beneficios vs Descuento (Matplotlib Multivariante)')
 axes[1, 0].set_xlabel('Ventas ($)')
 axes[1, 0].set_ylabel('Beneficio ($)')
-# Conclusión: A medida que aumentan las ventas, los beneficios tienden a aumentar, pero también el riesgo; se observan casos de grandes pérdidas en ventas de alto volumen.
 
+# Agregar una barra de color (leyenda) para la tercera variable
+cbar = fig.colorbar(scatter_multi, ax=axes[1, 0])
+cbar.set_label('Nivel de Descuento')
+
+# Conclusión Multivariante: El gráfico muestra claramente que las mayores pérdidas (puntos en la parte inferior del eje Y) coinciden sistemáticamente con los tonos rojos, es decir, con los descuentos más altos. El tamaño de los puntos también indica que incluso en volúmenes altos de artículos (puntos grandes), un descuento excesivo erosiona completamente el margen de beneficio.
 # --- Gráfico 4: Bivariante con Seaborn (Barplot Agrupado) ---
 # Ventas promedio por Segmento y Categoría
 sns.barplot(data=df, x='Segment', y='Sales', hue='Category', ax=axes[1, 1], palette='viridis', errorbar=None)
